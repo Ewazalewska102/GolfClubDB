@@ -2,53 +2,108 @@
 @model GolfClubDB.Pages.Members.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Members";
 }
 
-<h1>Index</h1>
+<h1>Members</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+        <label class="form-label" for="Gender">Gender</label>
+        <select class="form-select" id="Gender" name="Gender">
+            <option value="">All</option>
+            @foreach (var g in Model.GenderOptions)
+            {
+                if (g == Model.Gender)
+                {
+                    <option value="@g" selected>@g</option>
+                }
+                else
+                {
+                    <option value="@g">@g</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div class="col-auto">
+        <label class="form-label" for="HandicapRange">Handicap Range</label>
+        <select class="form-select" id="HandicapRange" name="HandicapRange">
+            <option value="" selected="@(string.IsNullOrWhiteSpace(Model.HandicapRange))">All</option>
+            <option value="below10" selected="@(Model.HandicapRange == "below10")">Below 10</option>
+            <option value="between11and20" selected="@(Model.HandicapRange == "between11and20")">Between 11 and 20</option>
+            <option value="above20" selected="@(Model.HandicapRange == "above20")">Above 20</option>
+        </select>
+    </div>
+
+    <div class="col-auto align-self-end">
+        <button type="submit" class="btn btn-primary">Apply</button>
+
+        <a class="btn btn-secondary"
+           asp-page="./Index">
+            Clear
+        </a>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
+            <th>Membership Number</th>
+
             <th>
-                @Html.DisplayNameFor(model => model.Member[0].Name)
+                @{
+                    // toggle name sort
+                    var nextNameSort = (Model.SortOrder == "name_desc") ? "name_asc" : "name_desc";
+                }
+                <a asp-page="./Index"
+                   asp-route-Gender="@Model.Gender"
+                   asp-route-HandicapRange="@Model.HandicapRange"
+                   asp-route-SortOrder="@nextNameSort">
+                    Name
+                </a>
             </th>
+
+            <th>Email</th>
+            <th>Gender</th>
+
             <th>
-                @Html.DisplayNameFor(model => model.Member[0].Email)
+                @{
+                    // toggle handicap sort
+                    var nextHcapSort = (Model.SortOrder == "hcap_desc") ? "hcap_asc" : "hcap_desc";
+                }
+                <a asp-page="./Index"
+                   asp-route-Gender="@Model.Gender"
+                   asp-route-HandicapRange="@Model.HandicapRange"
+                   asp-route-SortOrder="@nextHcapSort">
+                    Handicap
+                </a>
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Member[0].Gender)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Member[0].Handicap)
-            </th>
+
             <th></th>
         </tr>
     </thead>
+
     <tbody>
-@foreach (var item in Model.Member) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Gender)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Handicap)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.MembershipNumber">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.MembershipNumber">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.MembershipNumber">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Member)
+        {
+            <tr>
+                <td>@item.MembershipNumber</td>
+                <td>@item.Name</td>
+                <td>@item.Email</td>
+                <td>@item.Gender</td>
+                <td>@item.Handicap</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.MembershipNumber">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.MembershipNumber">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.MembershipNumber">Delete</a> |
+                    <a asp-page="/Bookings/Index" asp-route-memberId="@item.MembershipNumber">View Bookings</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
