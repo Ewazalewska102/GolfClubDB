@@ -1,0 +1,90 @@
+﻿@page
+@model GolfClubDB.Pages.Bookings.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Booking[0].Member)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Booking[0].BookingDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Booking[0].TeeTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Booking[0].PlayerCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Booking[0].Player2Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Booking[0].Player2Handicap)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Booking[0].Player3Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Booking[0].Player3Handicap)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Booking[0].Player4Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Booking[0].Player4Handicap)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Booking) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Member.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BookingDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TeeTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlayerCount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Player2Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Player2Handicap)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Player3Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Player3Handicap)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Player4Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Player4Handicap)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
