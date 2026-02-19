@@ -5,7 +5,17 @@
     ViewData["Title"] = "Bookings";
 }
 
-<h1>Bookings</h1>
+<div class="page-header">
+    <h1>Bookings</h1>
+    <p>View all bookings or filter bookings for a selected member.</p>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="text-muted small">
+        Showing <strong>@Model.Booking.Count</strong> booking(s)
+    </div>
+    <a class="btn btn-success" asp-page="Create">+ Create Booking</a>
+</div>
 
 @if (Model.MemberId.HasValue)
 {
@@ -20,24 +30,20 @@
     </div>
 }
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-
-<table class="table">
+<table class="table table-hover bg-white shadow-sm">
     <thead>
         <tr>
             <th>Member</th>
             <th>Booking Date</th>
             <th>Tee Time</th>
-            <th>Player Count</th>
-            <th>Player2 Name</th>
-            <th>Player2 Handicap</th>
-            <th>Player3 Name</th>
-            <th>Player3 Handicap</th>
-            <th>Player4 Name</th>
-            <th>Player4 Handicap</th>
-            <th></th>
+            <th>Players</th>
+            <th>Player 2</th>
+            <th>H/C</th>
+            <th>Player 3</th>
+            <th>H/C</th>
+            <th>Player 4</th>
+            <th>H/C</th>
+            <th class="text-end">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -46,18 +52,22 @@
             <tr>
                 <td>@(item.Member != null ? item.Member.Email : "")</td>
                 <td>@item.BookingDate.ToString("yyyy-MM-dd")</td>
-                <td>@item.TeeTime.ToString("yyyy-MM-dd HH:mm")</td>
-                <td>@item.PlayerCount</td>
+                <td>@item.TeeTime.ToString("HH:mm")</td>
+                <td><span class="badge bg-success">@item.PlayerCount</span></td>
+
                 <td>@item.Player2Name</td>
                 <td>@item.Player2Handicap</td>
+
                 <td>@item.Player3Name</td>
                 <td>@item.Player3Handicap</td>
+
                 <td>@item.Player4Name</td>
                 <td>@item.Player4Handicap</td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary" asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                    <a class="btn btn-sm btn-outline-secondary" asp-page="./Details" asp-route-id="@item.Id">Details</a>
+                    <a class="btn btn-sm btn-outline-danger" asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }

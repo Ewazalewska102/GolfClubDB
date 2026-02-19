@@ -5,59 +5,62 @@
     ViewData["Title"] = "Members";
 }
 
-<h1>Members</h1>
+<div class="page-header">
+    <h1>Members</h1>
+    <p>Filter by gender and handicap range, sort by name or handicap, and view bookings per member.</p>
+</div>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="text-muted small">
+        Showing <strong>@Model.Member.Count</strong> member(s)
+    </div>
+    <a class="btn btn-primary" asp-page="Create">+ Create Member</a>
+</div>
 
-<form method="get" class="row g-2 mb-3">
-    <div class="col-auto">
-        <label class="form-label" for="Gender">Gender</label>
-        <select class="form-select" id="Gender" name="Gender">
-            <option value="">All</option>
-            @foreach (var g in Model.GenderOptions)
-            {
-                if (g == Model.Gender)
+<div class="filter-card">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label" for="Gender">Gender</label>
+            <select class="form-select" id="Gender" name="Gender">
+                <option value="">All</option>
+                @foreach (var g in Model.GenderOptions)
                 {
-                    <option value="@g" selected>@g</option>
+                    if (g == Model.Gender)
+                    {
+                        <option value="@g" selected>@g</option>
+                    }
+                    else
+                    {
+                        <option value="@g">@g</option>
+                    }
                 }
-                else
-                {
-                    <option value="@g">@g</option>
-                }
-            }
-        </select>
-    </div>
+            </select>
+        </div>
 
-    <div class="col-auto">
-        <label class="form-label" for="HandicapRange">Handicap Range</label>
-        <select class="form-select" id="HandicapRange" name="HandicapRange">
-            <option value="" selected="@(string.IsNullOrWhiteSpace(Model.HandicapRange))">All</option>
-            <option value="below10" selected="@(Model.HandicapRange == "below10")">Below 10</option>
-            <option value="between11and20" selected="@(Model.HandicapRange == "between11and20")">Between 11 and 20</option>
-            <option value="above20" selected="@(Model.HandicapRange == "above20")">Above 20</option>
-        </select>
-    </div>
+        <div class="col-md-4">
+            <label class="form-label" for="HandicapRange">Handicap Range</label>
+            <select class="form-select" id="HandicapRange" name="HandicapRange">
+                <option value="" selected="@(string.IsNullOrWhiteSpace(Model.HandicapRange))">All</option>
+                <option value="below10" selected="@(Model.HandicapRange == "below10")">Below 10</option>
+                <option value="between11and20" selected="@(Model.HandicapRange == "between11and20")">Between 11 and 20</option>
+                <option value="above20" selected="@(Model.HandicapRange == "above20")">Above 20</option>
+            </select>
+        </div>
 
-    <div class="col-auto align-self-end">
-        <button type="submit" class="btn btn-primary">Apply</button>
+        <div class="col-md-5 d-flex gap-2">
+            <button type="submit" class="btn btn-success">Apply</button>
+            <a class="btn btn-secondary" asp-page="./Index">Clear</a>
+        </div>
+    </form>
+</div>
 
-        <a class="btn btn-secondary"
-           asp-page="./Index">
-            Clear
-        </a>
-    </div>
-</form>
-
-<table class="table">
+<table class="table table-hover bg-white shadow-sm">
     <thead>
         <tr>
-            <th>Membership Number</th>
+            <th>Membership #</th>
 
             <th>
                 @{
-                    // toggle name sort
                     var nextNameSort = (Model.SortOrder == "name_desc") ? "name_asc" : "name_desc";
                 }
                 <a asp-page="./Index"
@@ -73,7 +76,6 @@
 
             <th>
                 @{
-                    // toggle handicap sort
                     var nextHcapSort = (Model.SortOrder == "hcap_desc") ? "hcap_asc" : "hcap_desc";
                 }
                 <a asp-page="./Index"
@@ -84,7 +86,7 @@
                 </a>
             </th>
 
-            <th></th>
+            <th class="text-end">Actions</th>
         </tr>
     </thead>
 
@@ -92,16 +94,20 @@
         @foreach (var item in Model.Member)
         {
             <tr>
-                <td>@item.MembershipNumber</td>
+                <td class="fw-semibold">@item.MembershipNumber</td>
                 <td>@item.Name</td>
                 <td>@item.Email</td>
-                <td>@item.Gender</td>
-                <td>@item.Handicap</td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@item.MembershipNumber">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.MembershipNumber">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.MembershipNumber">Delete</a> |
-                    <a asp-page="/Bookings/Index" asp-route-memberId="@item.MembershipNumber">View Bookings</a>
+                    <span class="badge bg-dark">@item.Gender</span>
+                </td>
+                <td>
+                    <span class="badge bg-primary">@item.Handicap</span>
+                </td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary" asp-page="./Edit" asp-route-id="@item.MembershipNumber">Edit</a>
+                    <a class="btn btn-sm btn-outline-secondary" asp-page="./Details" asp-route-id="@item.MembershipNumber">Details</a>
+                    <a class="btn btn-sm btn-outline-danger" asp-page="./Delete" asp-route-id="@item.MembershipNumber">Delete</a>
+                    <a class="btn btn-sm btn-success" asp-page="/Bookings/Index" asp-route-memberId="@item.MembershipNumber">View Bookings</a>
                 </td>
             </tr>
         }
