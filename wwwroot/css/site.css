@@ -1,3 +1,4 @@
+/* Base font sizing */
 html {
   font-size: 14px;
 }
@@ -8,10 +9,16 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+/* Focus styling */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
+/* Page structure */
 html {
   position: relative;
   min-height: 100%;
@@ -19,13 +26,86 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: #f8f9fa; /* light grey background */
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+/* Tables */
+.table td,
+.table th {
+  vertical-align: middle;
+}
+
+.table thead th {
+  background-color: #343a40;
+  color: white;
+}
+
+/* Navbar */
+.navbar-brand {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Buttons spacing */
+.btn {
+  border-radius: 6px;
+}
+
+/* Cards (Home page) */
+.card {
+  border-radius: 10px;
+  transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Forms */
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
   text-align: end;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+/* Headings */
+h1 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Footer */
+.footer {
+  background-color: #ffffff;
+  padding-top: 10px;
+}
+/* Hero section (Home page) */
+.hero-section {
+    height: 75vh;
+    background: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url('/images/golf.jpg');
+    background-size: cover;
+    background-position: center;
+}
+    .hero-section h1,
+    .hero-section p,
+    .hero-section .btn {
+        animation: fadeInUp 1s ease forwards;
+    }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

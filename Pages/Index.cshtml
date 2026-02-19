@@ -1,10 +1,51 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero-section text-white d-flex align-items-center">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Golf Club Management System</h1>
+        <p class="lead mb-4">
+            Manage members, tee-time bookings, filters and sorting in one place.
+        </p>
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a class="btn btn-primary btn-lg px-4" asp-page="/Members/Index">
+                Members
+            </a>
+            <a class="btn btn-success btn-lg px-4" asp-page="/Bookings/Index">
+                Bookings
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Members</h5>
+                    <p class="card-text">
+                        Create, update and delete members. Filter by gender and handicap ranges. Sort by name or handicap.
+                    </p>
+                    <a class="btn btn-outline-primary" asp-page="/Members/Index">Manage Members</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Bookings</h5>
+                    <p class="card-text">
+                        Create tee-time bookings with validation rules and view bookings per member.
+                    </p>
+                    <a class="btn btn-outline-success" asp-page="/Bookings/Index">Manage Bookings</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
