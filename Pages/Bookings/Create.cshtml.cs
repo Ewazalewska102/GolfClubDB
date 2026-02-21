@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using GolfClubDB.Data;
 using GolfClubDB.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,16 +22,47 @@ namespace GolfClubDB.Pages.Bookings
         [BindProperty]
         public Booking Booking { get; set; } = new Booking();
 
+        // Used to build the extra player dropdowns (Player2/3/4)
+        public SelectList MemberSelectList { get; set; } = default!;
+
         public async Task<IActionResult> OnGetAsync()
         {
+            // Default values so form doesn't show 01/01/0001
+            var now = DateTime.Now;
+            int roundedMinutes = ((now.Minute + 14) / 15) * 15;
+
+            DateTime roundedTime;
+            if (roundedMinutes == 60)
+                roundedTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).AddHours(1);
+            else
+                roundedTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, roundedMinutes, 0);
+
+            Booking = new Booking
+            {
+                TeeTime = roundedTime,
+                BookingDate = roundedTime.Date,
+                PlayerCount = 1
+            };
+
             await ReloadMembersDropdownAsync();
             return Page();
         }
 
+      
+        public async Task<IActionResult> OnGetMemberInfoAsync(int id)
+        {
+            var m = await _context.Members
+                .AsNoTracking()
+                .Where(x => x.MembershipNumber == id)
+                .Select(x => new { x.MembershipNumber, x.Name, x.Handicap })
+                .FirstOrDefaultAsync();
+
+            if (m == null) return NotFound();
+            return new JsonResult(m);
+        }
+
         public async Task<IActionResult> OnPostAsync()
         {
-            // Always reload dropdown when returning Page()
-            // so the dropdown doesn't break on validation errors.
             await ReloadMembersDropdownAsync();
 
             if (!ModelState.IsValid)
@@ -66,7 +99,6 @@ namespace GolfClubDB.Pages.Bookings
             }
             catch (DbUpdateException)
             {
-                // If the unique index triggers, show a friendly message
                 ModelState.AddModelError(string.Empty,
                     "Could not save booking. This member may already have a booking for that date.");
                 return Page();
@@ -77,14 +109,24 @@ namespace GolfClubDB.Pages.Bookings
 
         private async Task ReloadMembersDropdownAsync()
         {
-            var members = await _context.Members.AsNoTracking().ToListAsync();
+            var members = await _context.Members
+                .AsNoTracking()
+                .OrderBy(m => m.Name)
+                .ToListAsync();
 
-            // Value: MembershipNumber (PK), Text: Email (you can change to Name later)
+            // Main member dropdown (Value: MembershipNumber, Text: Name)
             ViewData["MemberId"] = new SelectList(
                 members,
                 nameof(Member.MembershipNumber),
-                nameof(Member.Email),
+                nameof(Member.Name),
                 Booking.MemberId
+            );
+
+            // Extra player dropdowns reuse the same list
+            MemberSelectList = new SelectList(
+                members,
+                nameof(Member.MembershipNumber),
+                nameof(Member.Name)
             );
         }
     }

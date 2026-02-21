@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GolfClubDB.Data;
+using GolfClubDB.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GolfClubDB.Data;
-using GolfClubDB.Models;
 
 namespace GolfClubDB.Pages.Bookings
 {
     public class EditModel : PageModel
     {
-        private readonly GolfClubDB.Data.GolfClubContext _context;
+        private readonly GolfClubContext _context;
 
-        public EditModel(GolfClubDB.Data.GolfClubContext context)
+        public EditModel(GolfClubContext context)
         {
             _context = context;
         }
@@ -26,53 +25,83 @@ namespace GolfClubDB.Pages.Bookings
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var booking =  await _context.Bookings.FirstOrDefaultAsync(m => m.Id == id);
+            var booking = await _context.Bookings
+                .AsNoTracking()
+                .FirstOrDefaultAsync(b => b.Id == id);
+
             if (booking == null)
-            {
                 return NotFound();
-            }
+
             Booking = booking;
-           ViewData["MemberId"] = new SelectList(_context.Members, "MembershipNumber", "Email");
+
+            await ReloadMembersDropdownAsync();
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            // Always reload dropdown when returning Page()
+            await ReloadMembersDropdownAsync();
+
             if (!ModelState.IsValid)
+                return Page();
+
+            // Force BookingDate to match TeeTime date (same as Create)
+            Booking.BookingDate = Booking.TeeTime.Date;
+
+            // Rule 1: 15-minute intervals only
+            if (Booking.TeeTime.Minute % 15 != 0 || Booking.TeeTime.Second != 0)
             {
+                ModelState.AddModelError("Booking.TeeTime",
+                    "Tee time must be in 15-minute intervals (00, 15, 30, 45).");
                 return Page();
             }
 
+            // Rule 2: member can’t book more than one game per day
+            // IMPORTANT: exclude the current booking by Id
+            bool alreadyBooked = await _context.Bookings.AnyAsync(b =>
+                b.Id != Booking.Id &&
+                b.MemberId == Booking.MemberId &&
+                b.BookingDate == Booking.BookingDate);
+
+            if (alreadyBooked)
+            {
+                ModelState.AddModelError(string.Empty,
+                    "This member already has a booking for that date.");
+                return Page();
+            }
+
+            // Attach + update
             _context.Attach(Booking).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateException)
             {
-                if (!BookingExists(Booking.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                
+                ModelState.AddModelError(string.Empty,
+                    "Could not save booking. This member may already have a booking for that date.");
+                return Page();
             }
 
             return RedirectToPage("./Index");
         }
 
-        private bool BookingExists(int id)
+        private async Task ReloadMembersDropdownAsync()
         {
-            return _context.Bookings.Any(e => e.Id == id);
+            var members = await _context.Members.AsNoTracking().ToListAsync();
+
+            // Value: MembershipNumber, Text: Name (better UX)
+            ViewData["MemberId"] = new SelectList(
+                members,
+                nameof(Member.MembershipNumber),
+                nameof(Member.Name),
+                Booking.MemberId
+            );
         }
     }
 }

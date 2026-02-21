@@ -2,94 +2,181 @@
 @model GolfClubDB.Pages.Bookings.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Booking";
 }
 
-<h1>Create</h1>
+<h1>Create Booking</h1>
 
-<h4>Booking</h4>
 <hr />
+
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <span class="text-danger">*</span>
-                <label asp-for="Booking.MemberId" class="control-label"></label>
-                <select asp-for="Booking.MemberId" class="form-control" asp-items="ViewBag.MemberId" aria-required="true"></select>
+                <label asp-for="Booking.MemberId" class="form-label"></label>
+                <select asp-for="Booking.MemberId"
+                        class="form-select"
+                        asp-items="ViewBag.MemberId"
+                        aria-required="true"
+                        id="MainMemberSelect"></select>
                 <span asp-validation-for="Booking.MemberId" class="text-danger"></span>
+
+                <div class="form-text">
+                    Selected member handicap: <strong id="MainMemberHandicap">-</strong>
+                </div>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <span class="text-danger">*</span>
-                <label asp-for="Booking.BookingDate" class="control-label"></label>
+                <label asp-for="Booking.BookingDate" class="form-label"></label>
                 <input asp-for="Booking.BookingDate" class="form-control" type="date" aria-required="true" />
                 <span asp-validation-for="Booking.BookingDate" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
                 <span class="text-danger">*</span>
-                <label asp-for="Booking.TeeTime" class="control-label"></label>
+                <label asp-for="Booking.TeeTime" class="form-label"></label>
                 <input asp-for="Booking.TeeTime" class="form-control" type="datetime-local" aria-required="true" />
                 <span asp-validation-for="Booking.TeeTime" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Booking.PlayerCount" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Booking.PlayerCount" class="form-label"></label>
                 <input asp-for="Booking.PlayerCount" class="form-control" />
                 <span asp-validation-for="Booking.PlayerCount" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Booking.Player2Name" class="control-label"></label>
-                <input asp-for="Booking.Player2Name" class="form-control" />
+            <hr />
+            <h5>Optional Players (2–4)</h5>
+
+            <!-- Player 2 -->
+            <div class="mb-2">
+                <label class="form-label">Player 2 (select existing member)</label>
+                <select class="form-select" id="Player2MemberSelect">
+                    <option value="">-- none --</option>
+                    @foreach (var opt in Model.MemberSelectList)
+                    {
+                        <option value="@opt.Value">@opt.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Booking.Player2Name" class="form-label"></label>
+                <input asp-for="Booking.Player2Name" class="form-control" id="Player2Name" />
                 <span asp-validation-for="Booking.Player2Name" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Booking.Player2Handicap" class="control-label"></label>
-                <input asp-for="Booking.Player2Handicap" class="form-control" />
+            <div class="mb-3">
+                <label asp-for="Booking.Player2Handicap" class="form-label"></label>
+                <input asp-for="Booking.Player2Handicap" class="form-control" id="Player2Handicap" />
                 <span asp-validation-for="Booking.Player2Handicap" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Booking.Player3Name" class="control-label"></label>
-                <input asp-for="Booking.Player3Name" class="form-control" />
+            <!-- Player 3 -->
+            <div class="mb-2">
+                <label class="form-label">Player 3 (select existing member)</label>
+                <select class="form-select" id="Player3MemberSelect">
+                    <option value="">-- none --</option>
+                    @foreach (var opt in Model.MemberSelectList)
+                    {
+                        <option value="@opt.Value">@opt.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Booking.Player3Name" class="form-label"></label>
+                <input asp-for="Booking.Player3Name" class="form-control" id="Player3Name" />
                 <span asp-validation-for="Booking.Player3Name" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Booking.Player3Handicap" class="control-label"></label>
-                <input asp-for="Booking.Player3Handicap" class="form-control" />
+            <div class="mb-3">
+                <label asp-for="Booking.Player3Handicap" class="form-label"></label>
+                <input asp-for="Booking.Player3Handicap" class="form-control" id="Player3Handicap" />
                 <span asp-validation-for="Booking.Player3Handicap" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Booking.Player4Name" class="control-label"></label>
-                <input asp-for="Booking.Player4Name" class="form-control" />
+            <!-- Player 4 -->
+            <div class="mb-2">
+                <label class="form-label">Player 4 (select existing member)</label>
+                <select class="form-select" id="Player4MemberSelect">
+                    <option value="">-- none --</option>
+                    @foreach (var opt in Model.MemberSelectList)
+                    {
+                        <option value="@opt.Value">@opt.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Booking.Player4Name" class="form-label"></label>
+                <input asp-for="Booking.Player4Name" class="form-control" id="Player4Name" />
                 <span asp-validation-for="Booking.Player4Name" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Booking.Player4Handicap" class="control-label"></label>
-                <input asp-for="Booking.Player4Handicap" class="form-control" />
+            <div class="mb-3">
+                <label asp-for="Booking.Player4Handicap" class="form-label"></label>
+                <input asp-for="Booking.Player4Handicap" class="form-control" id="Player4Handicap" />
                 <span asp-validation-for="Booking.Player4Handicap" class="text-danger"></span>
             </div>
 
-            <div class="form-group mt-2">
+            <div class="mt-2">
                 <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-page="Index" class="btn btn-secondary ms-2">Back</a>
             </div>
         </form>
     </div>
-</div>
-
-<div class="mt-2">
-    <a asp-page="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        async function fetchMemberInfo(memberId) {
+            if (!memberId) return null;
+            const url = `?handler=MemberInfo&id=${memberId}`;
+            const res = await fetch(url);
+            if (!res.ok) return null;
+            return await res.json();
+        }
+
+        async function setMainMemberHandicap() {
+            const select = document.getElementById("MainMemberSelect");
+            const handicapEl = document.getElementById("MainMemberHandicap");
+
+            const info = await fetchMemberInfo(select.value);
+            handicapEl.textContent = info ? info.handicap : "-";
+        }
+
+        async function bindPlayerSelect(selectId, nameId, hcapId) {
+            const sel = document.getElementById(selectId);
+            const nameInput = document.getElementById(nameId);
+            const hcapInput = document.getElementById(hcapId);
+
+            sel.addEventListener("change", async () => {
+                const info = await fetchMemberInfo(sel.value);
+                if (!info) return;
+
+                nameInput.value = info.name ?? "";
+                hcapInput.value = info.handicap ?? "";
+            });
+        }
+
+        // Init when page loads
+        document.addEventListener("DOMContentLoaded", async () => {
+            await setMainMemberHandicap();
+            document.getElementById("MainMemberSelect")
+                .addEventListener("change", setMainMemberHandicap);
+
+            await bindPlayerSelect("Player2MemberSelect", "Player2Name", "Player2Handicap");
+            await bindPlayerSelect("Player3MemberSelect", "Player3Name", "Player3Handicap");
+            await bindPlayerSelect("Player4MemberSelect", "Player4Name", "Player4Handicap");
+        });
+    </script>
 }
